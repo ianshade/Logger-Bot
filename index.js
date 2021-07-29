@@ -626,6 +626,35 @@ client.on('message', async message => {
 
 });
 
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+    if (newMember.voiceChannelID) {
+        console.log(newMember.voiceChannel.name, newMember.nickname)        
+        var x = db.get('loggingchannel_' + newMember.guild.id);
+        var x = client.channels.get(x);
+    
+        var embed = new discord.RichEmbed()
+            .setColor('GREEN')
+            .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL)
+            .setDescription(`${newMember.user} joined voice channel ${newMember.voiceChannel}`)
+            .setFooter(`ID: ${newMember.user.id}`)
+            .setTimestamp();
+        x.send(embed).catch(console.log);
+    }
+    if (oldMember.voiceChannelID) {
+        console.log(oldMember.voiceChannel.name, oldMember.nickname)
+        var x = db.get('loggingchannel_' + oldMember.guild.id);
+        var x = client.channels.get(x);
+    
+        var embed = new discord.RichEmbed()
+            .setColor('RED')
+            .setAuthor(oldMember.user.tag, oldMember.user.displayAvatarURL)
+            .setDescription(`${oldMember.user} left voice channel ${oldMember.voiceChannel}`)
+            .setFooter(`ID: ${oldMember.user.id}`)
+            .setTimestamp();
+        x.send(embed).catch(console.log);
+    }
+})
+
 client.on('error', e => {
     console.log(e);
 });
